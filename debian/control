@@ -1,0 +1,15 @@
+Source: salt-formula-decapod
+Maintainer: ales.komarek@newt.cz
+Section: admin
+Priority: optional
+Build-Depends: debhelper (>= 9), salt-master, python, python-yaml
+Standards-Version: 3.9.6
+Homepage: http://www.tcpcloud.eu
+Vcs-Browser: https://github.com/tcpcloud/salt-formula-decapod
+Vcs-Git: https://github.com/tcpcloud/salt-formula-decapod.git
+
+Package: salt-formula-decapod
+Architecture: all
+Depends: ${misc:Depends}, salt-master, reclass
+Description: decapod salt formula
+ Install and configure decapod system.

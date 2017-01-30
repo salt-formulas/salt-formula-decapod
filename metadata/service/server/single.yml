@@ -1,0 +1,10 @@
+applications:
+- decapod
+classes:
+- service.decapod.support
+parameters:
+  decapod:
+    server:
+      enabled: true
+      bind:
+        address: 0.0.0.0

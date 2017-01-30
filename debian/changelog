@@ -1,0 +1,5 @@
+salt-formula-decapod (0.1) trusty; urgency=medium
+
+  * Initial release
+
+ -- ales.komarek@newt.cz  Thu, 13 Aug 2015 23:23:41 +0200

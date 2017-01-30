@@ -1,0 +1,3 @@
+name: "decapod"
+version: "0.1"
+source: "https://github.com/tcpcloud/salt-formula-decapod"
