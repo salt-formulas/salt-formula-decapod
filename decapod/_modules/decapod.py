@@ -193,7 +193,7 @@ def generate_config(phys_mon_interface, vm_mon_interface, osd_devices, osd_journ
         "ceph_stable": "true",
         "ceph_stable_distro_source": "jewel-xenial",
         "ceph_stable_release": "jewel",
-        "ceph_stable_repo": "http://eu.mirror.fuel-infra.org/decapod/ceph/apt",
+        "ceph_stable_repo": "http://eu.mirror.fuel-infra.org/decapod/ceph/jewel-xenial",
         "cluster": "ceph",
         "cluster_network": "",
         "copy_admin_key": "true",
