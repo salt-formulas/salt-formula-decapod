@@ -27,10 +27,6 @@ __virtualname__ = 'decapod'
 
 
 def __virtual__():
-    '''
-    Check dependencies, using both methods from the chapter
-    '''
-
     return __virtualname__
 
 
@@ -176,7 +172,7 @@ def deploy_nodes(api_key, maas_server, server_discovery_key, decapod_ip, ansible
         output_json = json.loads(output)
 
         for record in output_json:
-            match = re.search('ceph-mon0[0-3]|ceph0[1-9]', record['hostname'])
+            match = re.search('ceph-mon[0-9]*|ceph[0-9]*', record['hostname'])
             if match:
                 match = re.search('Deploying', record['status_name'])
                 if match:
