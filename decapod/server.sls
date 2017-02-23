@@ -47,13 +47,6 @@ load containers:
     - source: salt://decapod/files/docker-compose.yml
     - template: jinja
 
-/root/containerization/files/devconfigs/:
-  file.directory:
-    - user: root
-    - group: root
-    - mode: 755
-    - makedirs: True
-
 /root/ansible_ssh_keyfile.pem:
   file.managed:
     - name: /root/ansible_ssh_keyfile.pem

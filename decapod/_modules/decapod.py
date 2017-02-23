@@ -268,6 +268,7 @@ def generate_config(phys_mon_interface, vm_mon_interface, osd_devices, osd_journ
         cluster_config['inventory']['_meta']['hostvars'][ip]['monitor_interface'] = vm_mon_interface
         cluster_config['inventory']['mons'].append(ip)
         cluster_config['inventory']['restapis'].append(ip)
+        cluster_config['inventory']['rgws'].append(ip)
 
     return cluster_config
 
