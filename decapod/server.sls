@@ -16,7 +16,7 @@ install pip packages:
 
 login to maas server:
   cmd.run:
-    - name: maas login mirantis {{ pillar['decapod']['maas_server'] }} {{ pillar['decapod']['maas_api_key'] }}
+    - name: maas login mirantis {{ pillar['decapod']['maas_server'] }} {{ pillar['decapod']['api_key'] }}
     - unless: maas list | grep mirantis > /dev/null
 
 /root/containers/:
