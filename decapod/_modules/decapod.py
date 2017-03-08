@@ -1,7 +1,4 @@
-'''
-decapod module
-'''
-import salt.utils
+# import salt.utils
 
 import oauth.oauth as oauth
 import httplib2
@@ -61,13 +58,13 @@ def deploy_nodes(api_key, maas_server, server_discovery_key, decapod_ip, ansible
     secret = api_key[2]
     consumer_key = api_key[0]
 
-    response = perform_API_request(maas_server, '/nodes/', 'GET', key, secret, consumer_key)
+    response = perform_API_request(maas_server, '/machines/', 'GET', key, secret, consumer_key)
 
     output = response[1].strip(' \t\n\r')
     output_json = json.loads(output)
 
     for record in output_json:
-        match = re.search('ceph-mon0[0-3]|ceph0[1-9]', record['hostname'])
+        match = re.search('ceph-mon[0-9]*|ceph[0-9]*', record['hostname'])
         if match:
             match = re.search('Allocated', record['status_name'])
             if match:
@@ -167,7 +164,7 @@ def deploy_nodes(api_key, maas_server, server_discovery_key, decapod_ip, ansible
 
     while 1:
         nodes = []
-        response = perform_API_request(maas_server, '/nodes/', 'GET', key, secret, consumer_key)
+        response = perform_API_request(maas_server, '/machines/', 'GET', key, secret, consumer_key)
         output = response[1].strip(' \t\n\r')
         output_json = json.loads(output)
 
@@ -246,8 +243,8 @@ def generate_config(phys_mon_interface, vm_mon_interface, osd_devices, osd_journ
 
            ]
         }
-        cluster_config['inventory']['_meta']['hostvars'][ip]['devices'] = osd_devices
-        cluster_config['inventory']['_meta']['hostvars'][ip]['raw_journal_devices'] = osd_journal_devices
+        cluster_config['inventory']['_meta']['hostvars'][ip]['devices'] = __grains__.get('osddisks', None)
+        cluster_config['inventory']['_meta']['hostvars'][ip]['raw_journal_devices'] = __grains__.get('ssddisks', None)
         cluster_config['inventory']['_meta']['hostvars'][ip]['monitor_interface'] = phys_mon_interface
         cluster_config['inventory']['osds'].append(ip)
 

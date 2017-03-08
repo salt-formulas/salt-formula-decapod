@@ -1,4 +1,3 @@
-# {%- from "decapod/map.jinja" import server with context %}
 {%- if server.enabled %}
 docker packages:
   pkg.installed:
@@ -67,16 +66,9 @@ start decapod:
     - cwd: /root/
     - unless: for i in root_frontend_1 root_frontend_1 root_controller_1 root_api_1 root_database_1; do docker inspect -f \{\{\.State.Running\}\} $i; done
 
-/root/migrate.sh:
-  file.managed:
-    - source: salt://decapod/files/migrate.sh
-    - template: jinja
-    - mode: '0744'
-
-db migrations:
+start migrations:
   cmd.run:
-    - name: ./migrate.sh -c root_database_1 apply
-    - cwd: /root
+    - name: docker-compose exec admin decapod-admin migration apply
 
 deploy nodes:
   module.run:
