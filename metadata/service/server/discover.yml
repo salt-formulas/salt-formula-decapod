@@ -1,0 +1,10 @@
+applications:
+- decapod
+classes:
+- service.decapod.support
+modules:
+- decapod
+parameters:
+  decapod:
+    discover:
+      enabled: true

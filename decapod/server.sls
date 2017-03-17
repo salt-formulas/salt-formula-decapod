@@ -1,4 +1,3 @@
-{%- if server.enabled %}
 docker packages:
   pkg.installed:
     - pkgs:
@@ -70,23 +69,3 @@ start migrations:
   cmd.run:
     - name: docker-compose exec admin decapod-admin migration apply
 
-deploy nodes:
-  module.run:
-    - name: decapod.deploy_nodes
-    - api_key: {{ pillar['decapod']['api_key'] }}
-    - maas_server: {{ pillar['decapod']['maas_server'] }}
-    - server_discovery_key: {{ pillar['decapod']['server_discovery_key'] }}
-    - decapod_ip: {{ pillar['decapod']['decapod_ip'] }}
-    - ansible_public_key: {{ pillar['decapod']['ansible_public_key'] }}
-
-configure cluster:
-  module.run:
-    - name: decapod.configure_cluster
-    - decapod_ip: {{ pillar['decapod']['decapod_ip'] }}
-    - decapod_user: {{ pillar['decapod']['decapod_user'] }}
-    - decapod_pass: {{ pillar['decapod']['decapod_pass'] }}
-    - storage_network: {{ pillar['decapod']['storage_network'] }}
-    - frontend_network: {{ pillar['decapod']['frontend_network'] }}
-    - management_network: {{ pillar['decapod']['management_network'] }}
-
-{%- endif %}
