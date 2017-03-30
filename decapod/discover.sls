@@ -14,7 +14,6 @@ ansible user:
         ansible ALL=(ALL) NOPASSWD:ALL
     - mode: '0600'
 
-
 {{ pillar['decapod']['ansible_public_key'] }}:
   ssh_auth.present:
     - user: ansible

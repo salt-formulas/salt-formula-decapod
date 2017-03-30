@@ -19,10 +19,6 @@ __virtualname__ = 'decapod'
 def __virtual__():
     return __virtualname__
 
-def extractIP(ipStr):
-    l = re.split('(.*)\.(.*)\.(.*)\.(.*)/(.*)', ipStr)
-    return l[1] + '.' + l[2]
-
 def perform_API_request(site, uri, method, key, secret, consumer_key):
     resource_tok_string = "oauth_token_secret=%s&oauth_token=%s" % (
         secret, key)
@@ -50,8 +46,10 @@ def add_node(decapod_ip, osd_devices, osd_journal_devices, decapod_user, decapod
         if record['data']['name'] == 'deploy-ceph':
             config = record['data']['configuration']['inventory']['_meta']['hostvars'][ip]
 
-
-    config['devices'] = osd_devices
+    config['devices'] = []
+    for i in osd_devices:
+        if i not in osd_journal_devices and i not in config['devices']:
+            config['devices'].append(i)
     config['raw_journal_devices'] = osd_journal_devices
 
     for i in range(len(playbook_configs)):
@@ -60,7 +58,7 @@ def add_node(decapod_ip, osd_devices, osd_journal_devices, decapod_user, decapod
             client.update_playbook_configuration(playbook_configs[i])
             break
 
-def generate_config(phys_mon_interface, vm_mon_interface, osd_devices, osd_journal_devices, mon_ips, osd_ips):
+def generate_config(phys_mon_interface, vm_mon_interface, mon_ips, osd_ips):
     cluster_config = {'global_vars':
     {
         "ceph_facts_template": "/usr/local/lib/python3.5/dist-packages/decapod_common/facts/ceph_facts_module.py.j2",
