@@ -11,11 +11,10 @@ install pip packages:
       - oauth
       - httplib2
       - uuid
+    {% if pillar['decapod']['http_proxy'] is defined %}
+    - proxy: {{ pillar['decapod']['http_proxy'] }}
+    {% endif %}
 
-login to maas server:
-  cmd.run:
-    - name: maas login mirantis {{ pillar['decapod']['maas_server'] }} {{ pillar['decapod']['api_key'] }}
-    - unless: maas list | grep mirantis > /dev/null
 
 /root/containers/:
   file.directory:
