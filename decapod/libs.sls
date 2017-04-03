@@ -1,12 +1,16 @@
 install requirements:
   pkg.installed:
     - names:
-      - python-pip
       - libssl-dev
 
-pip fix:
+/root/get-pip.py:
+  file.managed:
+    - source: salt://decapod/files/get-pip.py
+    - name: /root/get-pip.py
+
+install pip:
   cmd.run:
-    - name: pip install pip==8.1.1 
+    - name: python get-pip.py
 
 /root/decapodlib:
   file.directory:
