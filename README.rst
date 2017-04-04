@@ -11,8 +11,9 @@ Sample pillars
 
 Decapod Server
 
-.. code-block:: yaml
-    decapod
+ .. code-block:: yaml
+
+    decapod:
         server_discovery_key: https://github.com/Mirantis/ceph-lcm/blob/master/containerization/files/devconfigs/config.yaml api['server_discovery_token']
         decapod_ip: 127.0.0.1
 
@@ -52,32 +53,34 @@ Decapod Server
 Decapod Client
 
 .. code-block:: yaml
-  decapod:
-    client:
-      admin_key: AQCvCbtToC6MDhAATtuT70Sl+DymPCfDSsyV4w==
-      users:
+
+    decapod:
+      client:
+        admin_key: AQCvCbtToC6MDhAATtuT70Sl+DymPCfDSsyV4w==
+        users:
         - nova:
             key: AQCvCbtToC6MDhAATtuT70Sl+DymPCfDSsyV4w==
             caps:
               osd: 'allow r'
               mon: 'allow class-read object_prefix rbd_children, allow rwx pool=nova'
         - cinder:
-            key: AQCvCbtToC6MDhAATtuT70Sl+DymPCfDSsyV4w==
-            caps:
-              osd: 'allow r'
-              mon: 'allow class-read object_prefix rbd_children, allow rwx pool=cinder'
-      pools:
-        - nova:
-            rule: 0
-            pg: 100
-        - cinder:
-            rule: 0
-            pg: 100
+                key: AQCvCbtToC6MDhAATtuT70Sl+DymPCfDSsyV4w==
+                caps:
+                  osd: 'allow r'
+                  mon: 'allow class-read object_prefix rbd_children, allow rwx pool=cinder'
+          pools:
+            - nova:
+                rule: 0
+                pg: 100
+            - cinder:
+                rule: 0
+                pg: 100
 
 
 Decapod Discover
 
 .. code-block:: yaml
+
     decapod:
         server_discovery_key: https://github.com/Mirantis/ceph-lcm/blob/master/containerization/files/devconfigs/config.yaml api['server_discovery_token']
         decapod_ip: 127.0.0.1
