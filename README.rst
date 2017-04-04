@@ -18,7 +18,7 @@ Decapod Server
         decapod_ip: 127.0.0.1
 
         # as default, all ssd disks will be configured as journal devices,
-        if you want to use them as osd you need to define ssdpools and ssd_size
+        # if you want to use them as osd you need to define ssdpools and ssd_size
         ssdpools:
           - /dev/sdb
           - /dev/sdc
