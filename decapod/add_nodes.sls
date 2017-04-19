@@ -29,6 +29,6 @@
       - decapod_pass: {{ pillar['decapod']['decapod_pass'] }}
       - osd_devices: {{ osd_grains[node]['pools'] | list + pillar['decapod']['ssdpools']| list }}
       - osd_journal_devices: {{ cache[node] | default(osd_grains[node]['cache']) }}
-      - ip: {{ osd_grains[node]['fqdn_ip4'] | first }}
+      - ip: {{ osd_grains[node]['decapod_mgmt_ip'] }}
 
 {% endfor %}

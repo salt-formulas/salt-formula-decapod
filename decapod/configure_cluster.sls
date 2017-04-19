@@ -8,11 +8,11 @@
 {% for node in nodes %}
   {% set grains = salt.saltutil.runner('mine.get',tgt=node,fun='grains.items') %}
   {%- if grains[node]['decapod_type'] == 'monitor' %}
-    {% set ip = grains[node]['fqdn_ip4'] | first %}
+    {% set ip = grains[node]['decapod_mgmt_ip'] %}
     {%- do mon_ips.append(ip) %}
   {%- endif %}
   {%- if grains[node]['decapod_type'] == 'osd' %}
-    {% set ip = grains[node]['fqdn_ip4'] | first %}
+    {% set ip = grains[node]['decapod_mgmt_ip'] %}
     {%- do osd_ips.append(ip) %}
   {%- endif %}
 {% endfor %}
