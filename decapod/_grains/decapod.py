@@ -39,11 +39,11 @@ def decapod():
         match = re.search("ceph-mon", hostname)
         if match:
             decapod_type = 'monitor'
-            return {'pools': pools, 'cache': cache, 'decapod_type': decapod_type, 'decapod_mgmt_ip': local_ip}
+            return {'decapod_type': decapod_type, 'decapod_mgmt_ip': local_ip}
         match = re.search('ceph[0-9]*', hostname)
         if match:
             decapod_type = 'osd'
             return {'pools': pools, 'cache': cache, 'decapod_type': decapod_type, 'decapod_mgmt_ip': local_ip}
         else:
             decapod_type = 'other'
-            return {'pools': pools, 'cache': cache, 'decapod_type': decapod_type}
+            return {'decapod_type': decapod_type}

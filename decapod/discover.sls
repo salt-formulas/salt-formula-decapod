@@ -98,4 +98,15 @@ discover node:
   cmd.run:
     - name: /usr/share/server_discovery.sh
 
+add telegraf repo:
+  pkgrepo.managed:
+    - humanname: Logstash PPA
+    - name: deb https://repos.influxdata.com/ubuntu xenial stable
+    - dist: xenial
+    - file: /etc/apt/sources.list.d/influxdb.list
+
+telegraf:
+  pkg.installed
+
+
 

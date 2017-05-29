@@ -64,7 +64,11 @@ start decapod:
     - cwd: /root/
     - unless: for i in root_frontend_1 root_frontend_1 root_controller_1 root_api_1 root_database_1; do docker inspect -f \{\{\.State.Running\}\} $i; done
 
-#start migrations:
-#  cmd.run:
-#    - name: docker-compose exec admin decapod-admin migration apply
+wait for decapod to start:
+  cmd.run:
+    - name: sleep 120
 
+start migrations:
+  cmd.run:
+    - name: docker-compose exec admin decapod-admin migration apply
+    - cwd: /root

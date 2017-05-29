@@ -1,30 +1,52 @@
-{% set nodes = salt.saltutil.runner('mine.get',
-    tgt='ceph*',
-    fun='network.get_hostname',
-    tgt_type='glob') -%}
-
 {% set osd_ips = [] %}
 {% set mon_ips = [] %}
-{% for node in nodes %}
-  {% set grains = salt.saltutil.runner('mine.get',tgt=node,fun='grains.items') %}
-  {%- if grains[node]['decapod_type'] == 'monitor' %}
-    {% set ip = grains[node]['decapod_mgmt_ip'] %}
-    {%- do mon_ips.append(ip) %}
+{% set cache = {} %}
+
+{%- for node_name, node_grains in salt['mine.get']('ceph*', 'grains.items').iteritems() %}
+ {%- if node_grains['decapod_type'] == 'monitor' %}
+    {%- do mon_ips.append(node_grains['decapod_mgmt_ip']) %}
   {%- endif %}
-  {%- if grains[node]['decapod_type'] == 'osd' %}
-    {% set ip = grains[node]['decapod_mgmt_ip'] %}
-    {%- do osd_ips.append(ip) %}
+  {%- if node_grains['decapod_type'] == 'osd' %}
+    {%- do osd_ips.append(node_grains['decapod_mgmt_ip']) %}
+    {% for device in pillar['decapod']['cache_devices'] %}
+      {% if device in node_grains['cache'] %}
+        {% do cache.update({node_name: pillar['decapod']['cache_devices']}) %}
+      {% else %}
+        {% do cache.update({node_name: node_grains['cache']}) %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
   {%- endif %}
-{% endfor %}
+{%- endfor %}
 
 configure cluster:
   module.run:
     - name: decapod.configure_cluster
-    - decapod_ip: {{ pillar['decapod']['decapod_ip'] }}
-    - decapod_user: {{ pillar['decapod']['decapod_user'] }}
-    - decapod_pass: {{ pillar['decapod']['decapod_pass'] }}
     - storage_network: {{ pillar['decapod']['storage_network'] }}
     - frontend_network: {{ pillar['decapod']['frontend_network'] }}
     - osd_ips: {{ osd_ips }}
     - mon_ips: {{ mon_ips }}
+    - mode: "cluster_deploy"
 
+{%- for node_name, node_grains in salt['mine.get']('ceph*', 'grains.items').iteritems() %}
+add new node {{ node_name }}:
+  module.run:
+    - name: decapod.add_node
+    {%- if node_grains['pools'] is defined %}
+    - osd_devices: {{ node_grains['pools'] | list + pillar['decapod']['ssdpools']| list }}
+    {%- else %}
+    - osd_devices: ''
+    {%- endif %}
+    {%- if cache[node_name] is not defined and node_grains['cache'] is not defined %}
+    - osd_journal_devices: []
+    {%- else %}
+    - osd_journal_devices: {{ cache[node_name] | default(node_grains['cache']) }}
+    {%- endif %}
+    - ip: {{ node_grains['decapod_mgmt_ip'] }}
+    - mode: 'cluster_deploy'
+{%- endfor %}
+
+#execute configuration:
+#  module.run:
+#    - name: decapod.execute_configuration
+#    - mode: 'cluster_deploy'
