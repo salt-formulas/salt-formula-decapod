@@ -21,6 +21,15 @@ update radosgw configuration:
           log file = /var/log/ceph/ceph-rgw-{{ mon }}.log
           rgw data = /var/lib/ceph/radosgw/ceph-rgw.{{ mon }}
           rgw frontends = civetweb port={{ ip }}:8080 num_threads=50
+
+          rgw content length compat = True
+          rgw dns name = ${_param:cluster_domain}
+          rgw keystone accepted roles = _member_, Member, admin, swiftoperator
+          rgw keystone admin_token = ${_param:keystone_service_token}
+          rgw keystone revocation interval = 60
+          rgw keystone url = ${_param:keystone_service_host}:5000
+          rgw print_continue = True
+          rgw s3 auth use keystone = True
         {% endfor %}
 
     - append_if_not_found: True
