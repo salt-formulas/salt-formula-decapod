@@ -9,7 +9,7 @@ from salt.exceptions import CommandExecutionError, SaltInvocationError
 
 
 def __virtual__():
-    return True
+    return 'decapod'
 
 
 def _get_decapod_client():
@@ -43,10 +43,11 @@ def _get_playbook_configuration_by_name(client, name):
             return cfg
     return False
 
+
 def _check_cfg_exists(client, name, cluster_id):
     pb_cfg = _get_playbook_configuration_by_name(client, name)
-    
     return pb_cfg and pb_cfg.get('data', {}).get('cluster_id') == cluster_id
+
 
 def _compare_dcts(base_dct, update_dct):
     diff = {}
@@ -71,7 +72,7 @@ def _compare_dcts(base_dct, update_dct):
 
         # Remove empty results of recursion
         if diff[key] == {}:
-            diff.pop(key, None) 
+            diff.pop(key, None)
     return diff
 
 
@@ -86,7 +87,8 @@ def _set_hdds(hdd_list, cfg):
 
 def _set_mon_ips(mon_pub_list, raw_pb_cfg):
     update_dict = {}
-    inv = raw_pb_cfg.get('data', {}).get('configuration', {}).get('inventory', {})
+    configuration = raw_pb_cfg.get('data', {}).get('configuration', {})
+    inv = configuration.get('inventory', {})
     hosts = inv.get('_meta', {}).get('hostvars', {})
     mons = {key: val for key, val in hosts.items()
             if val.get('devices', []) == []}
@@ -101,7 +103,7 @@ def _set_mon_ips(mon_pub_list, raw_pb_cfg):
             for iface_data in data.values():
                 for ip in iface_data.get('inet', []):
                     if ip.get('address', None) in mon_pub_list:
-                        update_dict[mon] = { "monitor_address": ip['address'] }
+                        update_dict[mon] = {"monitor_address": ip['address']}
                         break
     res = {
         'data': {
@@ -140,9 +142,11 @@ def get_cluster(name):
     client = _get_decapod_client()
     return _get_cluster_by_name(client, name)
 
+
 def get_servers():
     client = _get_decapod_client()
     return client.get_servers().get('items', [])
+
 
 def create_cluster(name):
     client = _get_decapod_client()
@@ -165,16 +169,21 @@ def get_playbook_configurations():
     client = _get_decapod_client()
     return client.get_playbook_configurations().get('items', [])
 
+
 def get_playbook_configuration(name):
     client = _get_decapod_client()
     return _get_playbook_configuration_by_name(client, name)
 
-def create_playbook_configuration(name, cluster_name, cfg_type, hints=[], nodes=[]):
+
+def create_playbook_configuration(name, cluster_name, cfg_type, hints=[],
+                                  nodes=[]):
+
     client = _get_decapod_client()
     cluster = _get_cluster_by_name(client, cluster_name)
 
     if not cluster:
-        raise CommandExecutionError("Cluster {0} does not exists".format(cluster_name))
+        msg = "Cluster {0} does not exists"
+        raise CommandExecutionError(msg.format(cluster_name))
     elif _check_cfg_exists(client, name, cluster['id']):
         msg = "Playbook config {0} for cluster {1} exists"
         raise CommandExecutionError(msg.format(name, cluster_name))
@@ -183,7 +192,6 @@ def create_playbook_configuration(name, cluster_name, cfg_type, hints=[], nodes=
     if len(all_nodes) == 0:
         raise CommandExecutionError("No nodes are registered")
 
-
     cfg_hints = [{'id': hint, 'value': True} for hint in hints]
 
     res = client.create_playbook_configuration(
@@ -191,7 +199,7 @@ def create_playbook_configuration(name, cluster_name, cfg_type, hints=[], nodes=
         cluster['id'],
         cfg_type,
         nodes,
-        hints = cfg_hints
+        hints=cfg_hints
     )
     return res
 
@@ -202,13 +210,14 @@ def delete_playbook_configuration(name, cluster_name):
     pb_cfg = _get_playbook_configuration_by_name(client, name)
 
     if not cluster:
-        raise CommandExecutionError("Cluster {0} does not exist".format(cluster_name)) 
+        msg = "Cluster {0} does not exists"
+        raise CommandExecutionError(msg.format(cluster_name))
     elif not _check_cfg_exists(client, name, cluster['id']):
         msg = "Playbook config {0} for cluster {1} not found"
         raise CommandExecutionError(msg.format(name, cluster_name))
 
     return client.delete_playbook_configuration(pb_cfg['id'])
-   
+
 
 def get_cfg_diff(name, cluster_name, data):
     client = _get_decapod_client()
@@ -217,13 +226,15 @@ def get_cfg_diff(name, cluster_name, data):
     clean_data = json.loads(json.dumps(data))
 
     if not cluster:
-        raise CommandExecutionError("Cluster {0} does not exist".format(cluster_name)) 
+        msg = "Cluster {0} does not exists"
+        raise CommandExecutionError(msg.format(cluster_name))
     elif not _check_cfg_exists(client, name, cluster['id']):
         msg = "Playbook config {0} for cluster {1} not found"
         raise CommandExecutionError(msg.format(name, cluster_name))
 
-    return _compare_dcts(pb_cfg.get('data', {}).get('configuration', {}), clean_data)
-    
+    configuration = pb_cfg.get('data', {}).get('configuration', {})
+    return _compare_dcts(configuration, clean_data)
+
 
 def update_playbook_configuration(cfg_name, cluster_name, data):
     client = _get_decapod_client()
@@ -231,7 +242,8 @@ def update_playbook_configuration(cfg_name, cluster_name, data):
     pb_cfg = _get_playbook_configuration_by_name(client, cfg_name)
 
     if not cluster:
-        raise CommandExecutionError("Cluster {0} does not exist".format(cluster_name)) 
+        msg = "Cluster {0} does not exists"
+        raise CommandExecutionError(msg.format(cluster_name))
     elif not _check_cfg_exists(client, cfg_name, cluster['id']):
         msg = "Playbook config {0} for cluster {1} not found"
         raise CommandExecutionError(msg.format(cfg_name, cluster_name))
