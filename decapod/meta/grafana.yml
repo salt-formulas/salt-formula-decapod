@@ -1,0 +1,10 @@
+dashboard:
+  cluster:
+    format: json
+    template: decapod/files/grafana_dashboards/cluster.json
+  osd:
+    format: json
+    template: decapod/files/grafana_dashboards/osd.json
+  pool:
+    format: json
+    template: decapod/files/grafana_dashboards/pool.json

@@ -36,7 +36,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'salt-formula-decapod'
-copyright = u'2016, Ales Komarek'
+copyright = u'2017, Mateusz Los'
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
 add_function_parentheses = True
