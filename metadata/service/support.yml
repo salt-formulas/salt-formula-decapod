@@ -8,4 +8,6 @@ parameters:
       sensu:
         enabled: false
       sphinx:
+        enabled: false
+      grafana:
         enabled: true

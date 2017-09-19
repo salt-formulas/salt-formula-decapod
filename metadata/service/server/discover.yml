@@ -6,5 +6,5 @@ modules:
 - decapod
 parameters:
   decapod:
-    server:
+    discover:
       enabled: true
