@@ -10,6 +10,6 @@ Vcs-Git: https://github.com/tcpcloud/salt-formula-decapod.git
 
 Package: salt-formula-decapod
 Architecture: all
-Depends: ${misc:Depends}, salt-master, reclass
+Depends: ${misc:Depends}
 Description: decapod salt formula
  Install and configure decapod system.
